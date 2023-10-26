@@ -32,6 +32,9 @@ The follwing values are configurable in `/src/config.ts`
 - **`SWIPE_CELL_VALUE`** is the value of the cell created on every swipe
 - **`WIN_VALUE`** when this value has been reached the player has won
 
+Also there is a CSS custom property at `#app` called `--scale`, use it to change the size of the whole application.
+It can be changed live from the browser developer tools.
+
 ## Licensing
 
 [MIT Licence](https://opensource.org/license/mit/)
