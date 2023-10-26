@@ -31,13 +31,13 @@ export interface Cell {
   value: CellValue | Obstacle;
 }
 
-export function emptyCell() {
-  return createCell(0);
-}
-
 export function createCell(value: CellValue): Cell {
   return {
     id: lastId++,
     value,
   };
+}
+
+export function emptyCell() {
+  return createCell(0);
 }

@@ -1,0 +1,19 @@
+.obstacles-selector {
+  display: flex;
+  gap: 0.5em;
+  font-size: 0.8em;
+}
+
+.obstacles-selector h4 {
+  margin: 0;
+  font-size: 1em;
+}
+
+.obstacles-selector button {
+  padding: 0.2em 0.5em;
+}
+
+.obstacles-selector button.active {
+  opacity: 0.5;
+  pointer-events: none;
+}
