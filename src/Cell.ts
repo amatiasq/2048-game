@@ -2,6 +2,7 @@ type CellId = number;
 
 export type CellValue =
   | 0
+  | 1
   | 2
   | 4
   | 8

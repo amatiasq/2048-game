@@ -1,10 +1,9 @@
-import { useDispatch, useSelector } from 'react-redux';
+import { useSelector } from 'react-redux';
 import { RootState } from '../store';
 import './Grid.css';
 
 export function Grid() {
   const grid = useSelector((state: RootState) => state.game.grid);
-  const dispatch = useDispatch();
 
   return (
     <div class="grid">
@@ -13,9 +12,10 @@ export function Grid() {
           <div
             key={cell.id}
             class="cell"
+            data-value={cell.value}
             style={{ '--row': rowIndex, '--column': columnIndex }}
           >
-            {cell.value}
+            {cell.value || null}
           </div>
         ))
       )}

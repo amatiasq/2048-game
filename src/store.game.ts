@@ -5,6 +5,7 @@ import { array, shuffle } from './util/array';
 const COLUMNS = 6;
 const ROWS = 6;
 const INITIAL_CELL_VALUE: CellValue = 2;
+const SWIPE_CELL_VALUE: CellValue = 1;
 
 // This may look weird, the value and the type have the same name
 // I've an issue in Typescript repo to simplift this syntax
@@ -39,14 +40,80 @@ export const gameSlice = createSlice({
     spawnRandomCell(state, action: PayloadAction<CellValue>) {
       spawnRandomCellInternal(state, action.payload);
     },
+
+    swipeUp(state) {
+      const columns = array(COLUMNS, (columnIndex) =>
+        state.grid.map((row) => row[columnIndex])
+      );
+
+      const swiped = columns.map((column) => push(column));
+      state.grid = array(ROWS, (rowIndex) => swiped.map((x) => x[rowIndex]));
+
+      spawnRandomCellInternal(state, SWIPE_CELL_VALUE);
+    },
+
+    swipeDown(state) {
+      const columns = array(COLUMNS, (columnIndex) =>
+        state.grid.map((row) => row[columnIndex])
+      );
+
+      const swiped = columns.map((column) => push(column.reverse()).reverse());
+      state.grid = array(ROWS, (rowIndex) => swiped.map((x) => x[rowIndex]));
+
+      spawnRandomCellInternal(state, SWIPE_CELL_VALUE);
+    },
+
+    swipeLeft(state) {
+      state.grid = state.grid.map((row) => push(row));
+      spawnRandomCellInternal(state, SWIPE_CELL_VALUE);
+    },
+
+    swipeRight(state) {
+      state.grid = state.grid.map((row) => push(row.reverse()).reverse());
+      spawnRandomCellInternal(state, SWIPE_CELL_VALUE);
+    },
   },
 });
 
-export const { startGame, gameOver, spawnRandomCell } = gameSlice.actions;
+export const {
+  startGame,
+  gameOver,
+  spawnRandomCell,
+  swipeUp,
+  swipeDown,
+  swipeLeft,
+  swipeRight,
+} = gameSlice.actions;
 
 export default gameSlice.reducer;
 
 // Internal utilites below
+
+function push(list: Cell[]) {
+  const result: Cell[] = [];
+
+  for (const cell of list) {
+    if (cell.value === 0) {
+      continue;
+    }
+
+    const last = result[result.length - 1];
+
+    if (last?.value === cell.value) {
+      last.value *= 2;
+    } else {
+      result.push(cell);
+    }
+  }
+
+  while (result.length < list.length) {
+    result.push(emptyCell());
+  }
+
+  return result;
+}
+
+class CellNotFoundError extends Error {}
 
 function spawnRandomCellInternal(state: GameState, value: CellValue) {
   const newCell = createCell(value);
@@ -68,8 +135,6 @@ function spawnRandomCellInternal(state: GameState, value: CellValue) {
     throw error;
   }
 }
-
-class CellNotFoundError extends Error {}
 
 function findRandomCell(grid: Cell[][], condition: (cell: Cell) => boolean) {
   // Find a random row that matches the condition

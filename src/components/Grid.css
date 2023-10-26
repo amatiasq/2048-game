@@ -11,4 +11,47 @@
   display: flex;
   justify-content: center;
   align-items: center;
+  border-radius: 5%;
+}
+
+/* Yeah, I didn't have to do this but this would allow designers to change it easely */
+
+.cell[data-value='0'] {
+  background-color: #97beab;
+}
+.cell[data-value='1'] {
+  background-color: #00a843;
+}
+.cell[data-value='2'] {
+  background-color: #2ab3a9;
+}
+.cell[data-value='4'] {
+  background-color: #1c80c4;
+}
+.cell[data-value='8'] {
+  background-color: #2a3d9b;
+}
+.cell[data-value='16'] {
+  background-color: #bc8bb5;
+}
+.cell[data-value='32'] {
+  background-color: #9a2b97;
+}
+.cell[data-value='64'] {
+  background-color: #32bd80;
+}
+.cell[data-value='128'] {
+  background-color: red;
+}
+.cell[data-value='256'] {
+  background-color: red;
+}
+.cell[data-value='512'] {
+  background-color: red;
+}
+.cell[data-value='1024'] {
+  background-color: red;
+}
+.cell[data-value='2048'] {
+  background-color: red;
 }
