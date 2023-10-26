@@ -1,0 +1,14 @@
+.grid {
+  display: grid;
+  grid-template-columns: repeat(6, calc(20px * var(--scale)));
+  grid-template-rows: repeat(6, calc(20px * var(--scale)));
+  gap: calc(3px * var(--scale));
+}
+
+.cell {
+  grid-row: calc(var(--row) + 1);
+  grid-column: calc(var(--column) + 1);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}

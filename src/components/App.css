@@ -1,0 +1,13 @@
+#app {
+  --scale: 5;
+
+  width: 100dvw;
+  height: 100dvh;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+
+  font-size: calc(1rem * var(--scale));
+  gap: 1em;
+}
