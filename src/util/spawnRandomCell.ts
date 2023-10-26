@@ -1,4 +1,3 @@
-import { COLUMNS, ROWS } from '../config';
 import { Cell, CellValue, createCell } from './Cell';
 import { array, shuffle } from './array';
 
@@ -8,7 +7,7 @@ export function spawnRandomCell(grid: Cell[][], value: CellValue) {
   const condition = (cell: Cell) => cell.value === 0;
 
   // Find a random row that matches the condition
-  const randomRowIndex = shuffle(array(ROWS)).find((rowIndex) =>
+  const randomRowIndex = shuffle(array(grid.length)).find((rowIndex) =>
     grid[rowIndex].some(condition)
   );
 
@@ -17,7 +16,7 @@ export function spawnRandomCell(grid: Cell[][], value: CellValue) {
   }
 
   const row = grid[randomRowIndex];
-  const randomColumnIndex = shuffle(array(COLUMNS)).find((rowIndex) =>
+  const randomColumnIndex = shuffle(array(row.length)).find((rowIndex) =>
     condition(row[rowIndex])
   );
 
