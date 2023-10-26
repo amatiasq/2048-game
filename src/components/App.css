@@ -2,7 +2,7 @@
   --scale: 2;
 
   width: 100dvw;
-  height: 100dvh;
+  height: 80dvh;
   display: flex;
   flex-direction: column;
   justify-content: center;
@@ -25,5 +25,6 @@
 @media (min-width: 1200px) {
   #app {
     --scale: 4;
+    height: 100dvh;
   }
 }
