@@ -8,6 +8,6 @@ export const ROWS = COLUMNS;
 
 export const INITIAL_CELL_VALUE: CellValue = 2;
 export const SWIPE_CELL_VALUE: CellValue = 1;
-export const WIN_VALUE: CellValue = 8;
+export const WIN_VALUE: CellValue = 2048;
 
 export const ALLOW_CONTINUE_AFTER_WIN = true;
