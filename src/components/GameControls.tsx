@@ -1,6 +1,7 @@
 import { AnyAction, Dispatch } from '@reduxjs/toolkit';
 import { useEffect } from 'preact/hooks';
 import { useDispatch, useSelector } from 'react-redux';
+import { ALLOW_CONTINUE_AFTER_WIN } from '../config';
 import { swipeDown, swipeLeft, swipeRight, swipeUp } from '../state/gameSlice';
 import { RootState } from '../state/store';
 
@@ -9,7 +10,10 @@ export function GameControls() {
   const dispatch = useDispatch();
 
   useEffect(() => {
-    if (status !== 'PLAYING') {
+    if (
+      status !== 'PLAYING' &&
+      (status !== 'WON' || !ALLOW_CONTINUE_AFTER_WIN)
+    ) {
       return;
     }
 
