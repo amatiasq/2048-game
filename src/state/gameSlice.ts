@@ -5,10 +5,10 @@ import {
   INITIAL_CELL_VALUE,
   ROWS,
   SWIPE_CELL_VALUE,
+  WIN_VALUE,
 } from '../config';
 import { Cell, OBSTACLE, emptyCell } from '../util/Cell';
 import { array, transpose } from '../util/array';
-import { checkWinState } from '../util/checkWinState';
 import { pushCells, pushCellsWithObstacles } from '../util/pushCells';
 import { CellNotFoundError, spawnRandomCell } from '../util/spawnRandomCell';
 
@@ -93,4 +93,8 @@ function afterSwipe(state: GameState) {
       throw error;
     }
   }
+}
+
+function checkWinState(grid: Cell[][]) {
+  return grid.some((row) => row.some((cell) => cell.value === WIN_VALUE));
 }
