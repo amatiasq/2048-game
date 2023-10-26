@@ -1,6 +1,6 @@
 import { PayloadAction, createSlice } from '@reduxjs/toolkit';
 import { Cell, CellValue, createCell, emptyCell } from './Cell';
-import { array, shuffle } from './util/array';
+import { array, shuffle, transpose } from './util/array';
 
 const COLUMNS = 6;
 const ROWS = 6;
@@ -42,24 +42,17 @@ export const gameSlice = createSlice({
     },
 
     swipeUp(state) {
-      const columns = array(COLUMNS, (columnIndex) =>
-        state.grid.map((row) => row[columnIndex])
-      );
-
-      const swiped = columns.map((column) => push(column));
-      state.grid = array(ROWS, (rowIndex) => swiped.map((x) => x[rowIndex]));
-
+      const swiped = transpose(state.grid).map((column) => push(column));
+      state.grid = transpose(swiped);
       spawnRandomCellInternal(state, SWIPE_CELL_VALUE);
     },
 
     swipeDown(state) {
-      const columns = array(COLUMNS, (columnIndex) =>
-        state.grid.map((row) => row[columnIndex])
+      const swiped = transpose(state.grid).map((column) =>
+        push(column.reverse()).reverse()
       );
 
-      const swiped = columns.map((column) => push(column.reverse()).reverse());
-      state.grid = array(ROWS, (rowIndex) => swiped.map((x) => x[rowIndex]));
-
+      state.grid = transpose(swiped);
       spawnRandomCellInternal(state, SWIPE_CELL_VALUE);
     },
 
@@ -138,7 +131,7 @@ function spawnRandomCellInternal(state: GameState, value: CellValue) {
 
 function findRandomCell(grid: Cell[][], condition: (cell: Cell) => boolean) {
   // Find a random row that matches the condition
-  const randomRowIndex = shuffle(array(6)).find((rowIndex) =>
+  const randomRowIndex = shuffle(array(ROWS)).find((rowIndex) =>
     grid[rowIndex].some(condition)
   );
 
@@ -147,7 +140,7 @@ function findRandomCell(grid: Cell[][], condition: (cell: Cell) => boolean) {
   }
 
   const row = grid[randomRowIndex];
-  const randomColumnIndex = shuffle(array(6)).find((rowIndex) =>
+  const randomColumnIndex = shuffle(array(COLUMNS)).find((rowIndex) =>
     condition(row[rowIndex])
   );
 

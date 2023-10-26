@@ -18,3 +18,21 @@ export function shuffle<T>(array: T[]) {
 
   return array;
 }
+
+export function transpose<T>(matrix: T[][]) {
+  const y = matrix.length;
+  const x = matrix[0]?.length;
+  if (x == null) return [];
+
+  const result: T[][] = [];
+
+  for (let i = 0; i < x; i++) {
+    result.push([]);
+
+    for (let j = 0; j < y; j++) {
+      result[i][j] = matrix[j][i];
+    }
+  }
+
+  return result;
+}

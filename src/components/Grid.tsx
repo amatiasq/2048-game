@@ -7,10 +7,11 @@ export function Grid() {
 
   return (
     <div class="grid">
-      {grid.map((row, rowIndex) =>
+      {grid.flatMap((row, rowIndex) =>
         row.map((cell, columnIndex) => (
           <div
             key={cell.id}
+            id={cell.id.toString()}
             class="cell"
             data-value={cell.value}
             style={{ '--row': rowIndex, '--column': columnIndex }}
