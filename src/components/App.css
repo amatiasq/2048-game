@@ -1,5 +1,5 @@
 #app {
-  --scale: 3;
+  --scale: 2;
 
   width: 100dvw;
   height: 100dvh;
@@ -14,4 +14,16 @@
 
 #app h2 {
   margin: 0;
+}
+
+@media (min-width: 768px) {
+  #app {
+    --scale: 3;
+  }
+}
+
+@media (min-width: 1200px) {
+  #app {
+    --scale: 4;
+  }
 }

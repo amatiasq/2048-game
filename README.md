@@ -1,6 +1,6 @@
 # 2048 Game
 
-The 2048 game, playable with keyboard arrows.
+The 2048 game, playable with keyboard arrows and touch swipes.
 
 ## Tech stack
 
