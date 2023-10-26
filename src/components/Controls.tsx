@@ -1,7 +1,7 @@
 import { useState } from 'preact/hooks';
 import { useDispatch, useSelector } from 'react-redux';
-import { RootState } from '../store';
-import { startGame } from '../store.game';
+import { startGame } from '../state/gameSlice';
+import { RootState } from '../state/store';
 import { Timer } from './Timer';
 
 export function UIControls() {

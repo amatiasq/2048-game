@@ -2,7 +2,7 @@ import { render } from 'preact';
 import { Provider } from 'react-redux';
 import { App } from './components/App.tsx';
 import './index.css';
-import { store } from './store.ts';
+import { store } from './state/store.ts';
 
 render(
   <Provider store={store}>

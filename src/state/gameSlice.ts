@@ -1,6 +1,5 @@
 import { createSlice } from '@reduxjs/toolkit';
-import { Cell, emptyCell } from './Cell';
-import { array, transpose } from './util/array';
+import { Cell, emptyCell } from '../Cell';
 import {
   COLUMNS,
   CellNotFoundError,
@@ -10,7 +9,8 @@ import {
   checkWinState,
   pushCells,
   spawnRandomCell,
-} from './util/game-mechanics';
+} from '../game-mechanics';
+import { array, transpose } from '../util/array';
 
 // This may look weird, the value and the type have the same name
 // I've an issue in Typescript repo to simplift this syntax

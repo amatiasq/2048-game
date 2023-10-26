@@ -1,5 +1,5 @@
-import { Cell, CellValue, createCell, emptyCell } from '../Cell';
-import { array, shuffle } from './array';
+import { Cell, CellValue, createCell, emptyCell } from './Cell';
+import { array, shuffle } from './util/array';
 
 export const COLUMNS = 6;
 export const ROWS = 6;

@@ -1,8 +1,8 @@
 import { AnyAction, Dispatch } from '@reduxjs/toolkit';
 import { useEffect } from 'preact/hooks';
 import { useDispatch, useSelector } from 'react-redux';
-import { RootState } from '../store';
-import { swipeDown, swipeLeft, swipeRight, swipeUp } from '../store.game';
+import { swipeDown, swipeLeft, swipeRight, swipeUp } from '../state/gameSlice';
+import { RootState } from '../state/store';
 
 export function GameControls() {
   const { status } = useSelector((state: RootState) => state.game);
