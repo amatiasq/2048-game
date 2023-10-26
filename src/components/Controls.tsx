@@ -41,6 +41,6 @@ export function UIControls() {
 
   function restart() {
     setStart(Date.now());
-    dispatch(startGame());
+    dispatch(startGame(2));
   }
 }

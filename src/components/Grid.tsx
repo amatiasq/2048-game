@@ -1,4 +1,5 @@
 import { useSelector } from 'react-redux';
+import { OBSTACLE } from '../Cell';
 import { COLUMNS, ROWS } from '../game-mechanics';
 import { RootState } from '../state/store';
 import './Grid.css';
@@ -29,7 +30,7 @@ export function Grid() {
           data-value={cell.value}
           style={{ '--row': cell.row, '--column': cell.col }}
         >
-          {cell.value || null}
+          {cell.value === OBSTACLE ? null : cell.value || null}
         </div>
       ))}
     </div>

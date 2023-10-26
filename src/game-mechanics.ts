@@ -1,9 +1,10 @@
-import { Cell, CellValue, createCell, emptyCell } from './Cell';
+import { Cell, CellValue, OBSTACLE, createCell, emptyCell } from './Cell';
 import { array, shuffle } from './util/array';
 
 // Feel free to change the dimensions of the grid
 export const COLUMNS = 6;
 export const ROWS = COLUMNS;
+export const HAS_OBSTACLES = true;
 
 export const INITIAL_CELL_VALUE: CellValue = 2;
 export const SWIPE_CELL_VALUE: CellValue = 1;
@@ -13,6 +14,26 @@ export class CellNotFoundError extends Error {}
 
 export function checkWinState(grid: Cell[][]) {
   return grid.some((row) => row.some((cell) => cell.value === WIN_VALUE));
+}
+
+export function pushCellsWithObstacles(list: Cell[]) {
+  const result = [];
+
+  let remaining = list;
+  let obstacleIndex = remaining.findIndex((x) => x.value === OBSTACLE);
+
+  while (obstacleIndex !== -1) {
+    const obstacle = remaining[obstacleIndex];
+    const chunk = remaining.slice(0, obstacleIndex);
+
+    result.push(...pushCells(chunk), obstacle);
+
+    remaining = remaining.slice(obstacleIndex + 1);
+    obstacleIndex = remaining.findIndex((x) => x.value === OBSTACLE);
+  }
+
+  result.push(...pushCells(remaining));
+  return result;
 }
 
 export function pushCells(list: Cell[]) {

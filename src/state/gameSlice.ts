@@ -1,13 +1,15 @@
-import { createSlice } from '@reduxjs/toolkit';
-import { Cell, emptyCell } from '../Cell';
+import { PayloadAction, createSlice } from '@reduxjs/toolkit';
+import { Cell, OBSTACLE, emptyCell } from '../Cell';
 import {
   COLUMNS,
   CellNotFoundError,
+  HAS_OBSTACLES,
   INITIAL_CELL_VALUE,
   ROWS,
   SWIPE_CELL_VALUE,
   checkWinState,
   pushCells,
+  pushCellsWithObstacles,
   spawnRandomCell,
 } from '../game-mechanics';
 import { array, transpose } from '../util/array';
@@ -17,6 +19,9 @@ import { array, transpose } from '../util/array';
 // https://github.com/microsoft/TypeScript/issues/48193
 const Status = ['READY', 'PLAYING', 'WON', 'GAME_OVER'] as const;
 type Status = (typeof Status)[number];
+
+const push = HAS_OBSTACLES ? pushCellsWithObstacles : pushCells;
+const reversePush = (list: Cell[]) => push(list.reverse()).reverse();
 
 export interface GameState {
   status: Status;
@@ -34,31 +39,37 @@ export const gameSlice = createSlice({
   initialState,
 
   reducers: {
-    startGame(state) {
+    startGame(state, action: PayloadAction<number>) {
       state.status = 'PLAYING';
       state.grid = array(ROWS, () => array(COLUMNS, emptyCell));
       spawnRandomCell(state.grid, INITIAL_CELL_VALUE);
+
+      const obstacles = action.payload ?? 0;
+
+      for (let i = 0; i < obstacles; i++) {
+        spawnRandomCell(state.grid, OBSTACLE);
+      }
     },
 
     swipeUp(state) {
-      const swiped = transpose(state.grid).map(pushCells);
+      const swiped = transpose(state.grid).map(push);
       state.grid = transpose(swiped);
       afterSwipe(state);
     },
 
     swipeDown(state) {
-      const swiped = transpose(state.grid).map(reversePushCells);
+      const swiped = transpose(state.grid).map(reversePush);
       state.grid = transpose(swiped);
       afterSwipe(state);
     },
 
     swipeLeft(state) {
-      state.grid = state.grid.map(pushCells);
+      state.grid = state.grid.map(push);
       afterSwipe(state);
     },
 
     swipeRight(state) {
-      state.grid = state.grid.map(reversePushCells);
+      state.grid = state.grid.map(reversePush);
       afterSwipe(state);
     },
   },
@@ -68,10 +79,6 @@ export const { startGame, swipeUp, swipeDown, swipeLeft, swipeRight } =
   gameSlice.actions;
 
 export default gameSlice.reducer;
-
-function reversePushCells(list: Cell[]) {
-  return pushCells(list.reverse()).reverse();
-}
 
 function afterSwipe(state: GameState) {
   if (checkWinState(state.grid)) {

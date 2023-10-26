@@ -102,3 +102,8 @@
   font-size: 0.5em;
   background-color: red;
 }
+
+.cell[data-value='-1'] {
+  z-index: 1;
+  background-color: black;
+}

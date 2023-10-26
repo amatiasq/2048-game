@@ -1,4 +1,9 @@
+import { HAS_OBSTACLES } from './game-mechanics';
+
 type CellId = number;
+
+export const OBSTACLE = -1;
+export type Obstacle = typeof OBSTACLE;
 
 export type CellValue =
   | 0
@@ -13,14 +18,17 @@ export type CellValue =
   | 256
   | 512
   | 1024
-  | 2048;
+  | 2048
+  // a bit of type gymnastics
+  // this ensures that Obstacle is a valid CellValue only if HAS_OBSTACLES is true
+  | (typeof HAS_OBSTACLES extends true ? Obstacle : never);
 
 // TODO: Use a UUID generator instead
 let lastId = 0;
 
 export interface Cell {
-  id: CellId;
-  value: CellValue;
+  readonly id: CellId;
+  value: CellValue | Obstacle;
 }
 
 export function emptyCell() {
