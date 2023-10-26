@@ -1,5 +1,5 @@
-import { Cell, CellValue, createCell } from '../Cell';
 import { COLUMNS, ROWS } from '../config';
+import { Cell, CellValue, createCell } from './Cell';
 import { array, shuffle } from './array';
 
 export class CellNotFoundError extends Error {}

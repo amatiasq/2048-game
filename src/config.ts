@@ -1,4 +1,4 @@
-import { CellValue } from './Cell';
+import { CellValue } from './util/Cell';
 
 export const HAS_OBSTACLES = true;
 

@@ -1,7 +1,7 @@
 import { useSelector } from 'react-redux';
-import { OBSTACLE } from '../Cell';
 import { COLUMNS, ROWS } from '../config';
 import { RootState } from '../state/store';
+import { OBSTACLE } from '../util/Cell';
 import './Grid.css';
 
 export function Grid() {

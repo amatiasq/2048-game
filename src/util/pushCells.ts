@@ -1,4 +1,4 @@
-import { Cell, OBSTACLE, emptyCell } from '../Cell';
+import { Cell, OBSTACLE, emptyCell } from './Cell';
 
 export function pushCellsWithObstacles(list: Cell[]) {
   const result = [];

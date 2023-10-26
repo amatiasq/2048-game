@@ -1,4 +1,4 @@
-import { HAS_OBSTACLES } from './config';
+import { HAS_OBSTACLES } from '../config';
 
 type CellId = number;
 

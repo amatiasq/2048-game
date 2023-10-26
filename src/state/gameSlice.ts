@@ -1,5 +1,4 @@
 import { PayloadAction, createSlice } from '@reduxjs/toolkit';
-import { Cell, OBSTACLE, emptyCell } from '../Cell';
 import {
   COLUMNS,
   HAS_OBSTACLES,
@@ -7,9 +6,10 @@ import {
   ROWS,
   SWIPE_CELL_VALUE,
 } from '../config';
+import { Cell, OBSTACLE, emptyCell } from '../util/Cell';
 import { array, transpose } from '../util/array';
 import { checkWinState } from '../util/checkWinState';
-import { pushCells, pushCellsWithObstacles } from '../util/game-implementation';
+import { pushCells, pushCellsWithObstacles } from '../util/pushCells';
 import { CellNotFoundError, spawnRandomCell } from '../util/spawnRandomCell';
 
 // This may look weird, the value and the type have the same name
