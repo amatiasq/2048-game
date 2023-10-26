@@ -1,4 +1,5 @@
 import { useSelector } from 'react-redux';
+import { COLUMNS, ROWS } from '../game-mechanics';
 import { RootState } from '../state/store';
 import './Grid.css';
 
@@ -20,7 +21,7 @@ export function Grid() {
     .sort((a, b) => a.id - b.id);
 
   return (
-    <div class="grid">
+    <div class="grid" style={{ '--rows': ROWS, '--columns': COLUMNS }}>
       {cells.map((cell) => (
         <div
           key={cell.id}

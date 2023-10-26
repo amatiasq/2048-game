@@ -1,8 +1,10 @@
 import { Cell, CellValue, createCell, emptyCell } from './Cell';
 import { array, shuffle } from './util/array';
 
+// Feel free to change the dimensions of the grid
 export const COLUMNS = 6;
-export const ROWS = 6;
+export const ROWS = COLUMNS;
+
 export const INITIAL_CELL_VALUE: CellValue = 2;
 export const SWIPE_CELL_VALUE: CellValue = 1;
 const WIN_VALUE = 2048;
@@ -48,7 +50,7 @@ export function spawnRandomCell(grid: Cell[][], value: CellValue) {
   );
 
   if (randomRowIndex == null) {
-    throw new CellNotFoundError('No row to satisfy condition was found');
+    throw new CellNotFoundError('No empty cell found');
   }
 
   const row = grid[randomRowIndex];

@@ -9,9 +9,6 @@
    */
   position: relative;
 
-  --rows: 6;
-  --columns: 6;
-
   --cell-size: calc(20px * var(--scale));
   --gap: calc(3px * var(--scale));
   --multiplier: calc(var(--cell-size) + var(--gap));
