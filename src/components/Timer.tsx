@@ -1,9 +1,20 @@
 import { useEffect, useState } from 'preact/hooks';
 
-export function Timer({ start }: { start: number }) {
+export function Timer({
+  start,
+  stopped,
+}: {
+  start: number;
+  stopped?: boolean;
+}) {
   const [elapsed, setElapsed] = useState(0);
 
   useEffect(() => {
+    if (stopped) {
+      setElapsed(Date.now() - start);
+      return;
+    }
+
     const interval = setInterval(() => {
       setElapsed(Date.now() - start);
     }, 1000);
@@ -12,7 +23,7 @@ export function Timer({ start }: { start: number }) {
       clearInterval(interval);
       setElapsed(0);
     };
-  }, [start]);
+  }, [start, stopped]);
 
   // end of hooks
 

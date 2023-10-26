@@ -1,5 +1,5 @@
 #app {
-  --scale: 5;
+  --scale: 3;
 
   width: 100dvw;
   height: 100dvh;
@@ -10,4 +10,8 @@
 
   font-size: calc(1rem * var(--scale));
   gap: 1em;
+}
+
+#app h2 {
+  margin: 0;
 }

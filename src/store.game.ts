@@ -7,6 +7,7 @@ import {
   INITIAL_CELL_VALUE,
   ROWS,
   SWIPE_CELL_VALUE,
+  checkWinState,
   pushCells,
   spawnRandomCell,
 } from './util/game-mechanics';
@@ -14,7 +15,7 @@ import {
 // This may look weird, the value and the type have the same name
 // I've an issue in Typescript repo to simplift this syntax
 // https://github.com/microsoft/TypeScript/issues/48193
-const Status = ['READY', 'PLAYING', 'GAME_OVER'] as const;
+const Status = ['READY', 'PLAYING', 'WON', 'GAME_OVER'] as const;
 type Status = (typeof Status)[number];
 
 export interface GameState {
@@ -39,42 +40,32 @@ export const gameSlice = createSlice({
       spawnRandomCell(state.grid, INITIAL_CELL_VALUE);
     },
 
-    gameOver(state) {
-      state.status = 'GAME_OVER';
-    },
-
     swipeUp(state) {
       const swiped = transpose(state.grid).map(pushCells);
       state.grid = transpose(swiped);
-      spawnCellAfterSwipe(state);
+      afterSwipe(state);
     },
 
     swipeDown(state) {
       const swiped = transpose(state.grid).map(reversePushCells);
       state.grid = transpose(swiped);
-      spawnCellAfterSwipe(state);
+      afterSwipe(state);
     },
 
     swipeLeft(state) {
       state.grid = state.grid.map(pushCells);
-      spawnCellAfterSwipe(state);
+      afterSwipe(state);
     },
 
     swipeRight(state) {
       state.grid = state.grid.map(reversePushCells);
-      spawnCellAfterSwipe(state);
+      afterSwipe(state);
     },
   },
 });
 
-export const {
-  startGame,
-  gameOver,
-  swipeUp,
-  swipeDown,
-  swipeLeft,
-  swipeRight,
-} = gameSlice.actions;
+export const { startGame, swipeUp, swipeDown, swipeLeft, swipeRight } =
+  gameSlice.actions;
 
 export default gameSlice.reducer;
 
@@ -82,12 +73,17 @@ function reversePushCells(list: Cell[]) {
   return pushCells(list.reverse()).reverse();
 }
 
-function spawnCellAfterSwipe(state: GameState) {
+function afterSwipe(state: GameState) {
+  if (checkWinState(state.grid)) {
+    state.status = 'WON';
+    return;
+  }
+
   try {
     spawnRandomCell(state.grid, SWIPE_CELL_VALUE);
   } catch (error) {
     if (error instanceof CellNotFoundError) {
-      gameSlice.caseReducers.gameOver(state);
+      state.status = 'GAME_OVER';
     } else {
       throw error;
     }

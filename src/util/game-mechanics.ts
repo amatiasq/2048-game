@@ -5,8 +5,13 @@ export const COLUMNS = 6;
 export const ROWS = 6;
 export const INITIAL_CELL_VALUE: CellValue = 2;
 export const SWIPE_CELL_VALUE: CellValue = 1;
+const WIN_VALUE = 2048;
 
 export class CellNotFoundError extends Error {}
+
+export function checkWinState(grid: Cell[][]) {
+  return grid.some((row) => row.some((cell) => cell.value === WIN_VALUE));
+}
 
 export function pushCells(list: Cell[]) {
   const result: Cell[] = [];

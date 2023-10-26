@@ -53,6 +53,16 @@ export function Controls() {
     );
   }
 
+  if (status === 'WON') {
+    return (
+      <>
+        <h2>You Won!</h2>
+        <Timer start={start} stopped />
+        <button onClick={restart}>Restart</button>
+      </>
+    );
+  }
+
   return (
     <>
       <Timer start={start} />
