@@ -1,5 +1,6 @@
 import { PayloadAction, createSlice } from '@reduxjs/toolkit';
 import {
+  ALLOW_CONTINUE_AFTER_WIN,
   COLUMNS,
   HAS_OBSTACLES,
   INITIAL_CELL_VALUE,
@@ -81,7 +82,10 @@ export default gameSlice.reducer;
 function afterSwipe(state: GameState) {
   if (checkWinState(state.grid)) {
     state.status = 'WON';
-    return;
+
+    if (!ALLOW_CONTINUE_AFTER_WIN) {
+      return;
+    }
   }
 
   try {

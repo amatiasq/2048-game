@@ -8,7 +8,7 @@ import './UIControls.css';
 
 export function UIControls() {
   const { status } = useSelector((state: RootState) => state.game);
-  const [obstacles, setObstacles] = useState(HAS_OBSTACLES ? 1 : 0);
+  const [obstacles, setObstacles] = useState(0);
 
   const showObstaclesControl = HAS_OBSTACLES && status !== 'PLAYING';
 
