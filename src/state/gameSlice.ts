@@ -2,17 +2,15 @@ import { PayloadAction, createSlice } from '@reduxjs/toolkit';
 import { Cell, OBSTACLE, emptyCell } from '../Cell';
 import {
   COLUMNS,
-  CellNotFoundError,
   HAS_OBSTACLES,
   INITIAL_CELL_VALUE,
   ROWS,
   SWIPE_CELL_VALUE,
-  checkWinState,
-  pushCells,
-  pushCellsWithObstacles,
-  spawnRandomCell,
-} from '../game-mechanics';
+} from '../config';
 import { array, transpose } from '../util/array';
+import { checkWinState } from '../util/checkWinState';
+import { pushCells, pushCellsWithObstacles } from '../util/game-implementation';
+import { CellNotFoundError, spawnRandomCell } from '../util/spawnRandomCell';
 
 // This may look weird, the value and the type have the same name
 // I've an issue in Typescript repo to simplift this syntax

@@ -1,6 +1,6 @@
 import { useSelector } from 'react-redux';
 import { OBSTACLE } from '../Cell';
-import { COLUMNS, ROWS } from '../game-mechanics';
+import { COLUMNS, ROWS } from '../config';
 import { RootState } from '../state/store';
 import './Grid.css';
 

@@ -1,4 +1,4 @@
-import { HAS_OBSTACLES } from './game-mechanics';
+import { HAS_OBSTACLES } from './config';
 
 type CellId = number;
 

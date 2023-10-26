@@ -1,7 +1,7 @@
 import './App.css';
-import { UIControls } from './Controls';
 import { GameControls } from './GameControls';
 import { Grid } from './Grid';
+import { UIControls } from './UIControls';
 
 export function App() {
   return (
