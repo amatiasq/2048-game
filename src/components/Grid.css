@@ -1,4 +1,12 @@
 .grid {
+  /*
+   * I tried to make use of display: grid here in the first iteration
+   * but I wasn't sure if changing grid-column and grid-row properties in cells
+   * would animate with transition.
+   *
+   * Turns out it does not, so we're back at using absolute positioning.
+   * This also helps with animation issues (see Grid.tsx)
+   */
   position: relative;
 
   --rows: 6;
@@ -24,52 +32,76 @@
 
   width: var(--cell-size);
   height: var(--cell-size);
+  background-color: red;
 
   --x: calc(var(--column) * var(--multiplier));
   --y: calc(var(--row) * var(--multiplier));
 
   transform: translate(var(--x), var(--y));
-  transition: transform 1s ease-in-out;
+  transition: transform 0.2s ease-in-out;
+
+  /*
+   * To animate incoming we need to animate classes right after they are created
+   */
 }
 
-/* Yeah, I didn't have to do this but this would allow designers to change it easely */
-
 .cell[data-value='0'] {
+  z-index: 1;
   background-color: #97beab;
 }
 .cell[data-value='1'] {
+  z-index: 2;
   background-color: #00a843;
 }
 .cell[data-value='2'] {
+  z-index: 3;
   background-color: #2ab3a9;
 }
 .cell[data-value='4'] {
+  z-index: 4;
   background-color: #1c80c4;
 }
 .cell[data-value='8'] {
+  z-index: 5;
   background-color: #2a3d9b;
 }
 .cell[data-value='16'] {
+  z-index: 6;
   background-color: #bc8bb5;
 }
 .cell[data-value='32'] {
+  z-index: 7;
+  font-size: 0.9em;
   background-color: #9a2b97;
 }
 .cell[data-value='64'] {
+  z-index: 8;
+  font-size: 0.9em;
   background-color: #32bd80;
 }
 .cell[data-value='128'] {
+  z-index: 9;
+  font-size: 0.7em;
+  /* I'm not good with colors, imagine a nice color palete ahead :) */
   background-color: red;
 }
 .cell[data-value='256'] {
+  z-index: 10;
+  font-size: 0.7em;
   background-color: red;
 }
 .cell[data-value='512'] {
+  z-index: 11;
+  font-size: 0.7em;
   background-color: red;
 }
 .cell[data-value='1024'] {
+  z-index: 12;
+  font-size: 0.5em;
   background-color: red;
 }
 .cell[data-value='2048'] {
+  z-index: 13;
+  font-size: 0.5em;
   background-color: red;
 }

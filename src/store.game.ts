@@ -1,11 +1,15 @@
-import { PayloadAction, createSlice } from '@reduxjs/toolkit';
-import { Cell, CellValue, createCell, emptyCell } from './Cell';
-import { array, shuffle, transpose } from './util/array';
-
-const COLUMNS = 6;
-const ROWS = 6;
-const INITIAL_CELL_VALUE: CellValue = 2;
-const SWIPE_CELL_VALUE: CellValue = 1;
+import { createSlice } from '@reduxjs/toolkit';
+import { Cell, emptyCell } from './Cell';
+import { array, transpose } from './util/array';
+import {
+  COLUMNS,
+  CellNotFoundError,
+  INITIAL_CELL_VALUE,
+  ROWS,
+  SWIPE_CELL_VALUE,
+  pushCells,
+  spawnRandomCell,
+} from './util/game-mechanics';
 
 // This may look weird, the value and the type have the same name
 // I've an issue in Typescript repo to simplift this syntax
@@ -25,45 +29,40 @@ const initialState: GameState = {
 
 export const gameSlice = createSlice({
   name: 'grid',
+
   initialState,
+
   reducers: {
     startGame(state) {
       state.status = 'PLAYING';
       state.grid = array(ROWS, () => array(COLUMNS, emptyCell));
-      spawnRandomCellInternal(state, INITIAL_CELL_VALUE);
+      spawnRandomCell(state.grid, INITIAL_CELL_VALUE);
     },
 
     gameOver(state) {
       state.status = 'GAME_OVER';
     },
 
-    spawnRandomCell(state, action: PayloadAction<CellValue>) {
-      spawnRandomCellInternal(state, action.payload);
-    },
-
     swipeUp(state) {
-      const swiped = transpose(state.grid).map((column) => push(column));
+      const swiped = transpose(state.grid).map(pushCells);
       state.grid = transpose(swiped);
-      spawnRandomCellInternal(state, SWIPE_CELL_VALUE);
+      spawnCellAfterSwipe(state);
     },
 
     swipeDown(state) {
-      const swiped = transpose(state.grid).map((column) =>
-        push(column.reverse()).reverse()
-      );
-
+      const swiped = transpose(state.grid).map(reversePushCells);
       state.grid = transpose(swiped);
-      spawnRandomCellInternal(state, SWIPE_CELL_VALUE);
+      spawnCellAfterSwipe(state);
     },
 
     swipeLeft(state) {
-      state.grid = state.grid.map((row) => push(row));
-      spawnRandomCellInternal(state, SWIPE_CELL_VALUE);
+      state.grid = state.grid.map(pushCells);
+      spawnCellAfterSwipe(state);
     },
 
     swipeRight(state) {
-      state.grid = state.grid.map((row) => push(row.reverse()).reverse());
-      spawnRandomCellInternal(state, SWIPE_CELL_VALUE);
+      state.grid = state.grid.map(reversePushCells);
+      spawnCellAfterSwipe(state);
     },
   },
 });
@@ -71,7 +70,6 @@ export const gameSlice = createSlice({
 export const {
   startGame,
   gameOver,
-  spawnRandomCell,
   swipeUp,
   swipeDown,
   swipeLeft,
@@ -80,75 +78,18 @@ export const {
 
 export default gameSlice.reducer;
 
-// Internal utilites below
-
-function push(list: Cell[]) {
-  const result: Cell[] = [];
-
-  for (const cell of list) {
-    if (cell.value === 0) {
-      continue;
-    }
-
-    const last = result[result.length - 1];
-
-    if (last?.value === cell.value) {
-      last.value *= 2;
-    } else {
-      result.push(cell);
-    }
-  }
-
-  while (result.length < list.length) {
-    result.push(emptyCell());
-  }
-
-  return result;
+function reversePushCells(list: Cell[]) {
+  return pushCells(list.reverse()).reverse();
 }
 
-class CellNotFoundError extends Error {}
-
-function spawnRandomCellInternal(state: GameState, value: CellValue) {
-  const newCell = createCell(value);
-
+function spawnCellAfterSwipe(state: GameState) {
   try {
-    const { row, column } = findRandomCell(
-      state.grid,
-      (cell) => cell.value === 0
-    );
-
-    state.grid[row][column] = newCell;
-    return true;
+    spawnRandomCell(state.grid, SWIPE_CELL_VALUE);
   } catch (error) {
     if (error instanceof CellNotFoundError) {
       gameSlice.caseReducers.gameOver(state);
-      return false;
+    } else {
+      throw error;
     }
-
-    throw error;
   }
-}
-
-function findRandomCell(grid: Cell[][], condition: (cell: Cell) => boolean) {
-  // Find a random row that matches the condition
-  const randomRowIndex = shuffle(array(ROWS)).find((rowIndex) =>
-    grid[rowIndex].some(condition)
-  );
-
-  if (randomRowIndex == null) {
-    throw new CellNotFoundError('No row to satisfy condition was found');
-  }
-
-  const row = grid[randomRowIndex];
-  const randomColumnIndex = shuffle(array(COLUMNS)).find((rowIndex) =>
-    condition(row[rowIndex])
-  );
-
-  return {
-    row: randomRowIndex,
-    // we already know the row had a cell that matched the condition
-    // so randomColumnIndex cannot be null
-    column: randomColumnIndex!,
-    cell: row[randomColumnIndex!],
-  };
 }
