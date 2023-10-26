@@ -82,6 +82,8 @@ function whenTouchSwipe(dispatch: Dispatch<AnyAction>) {
     // Ignore small movements.
     if (absDiff < 30) return;
 
+    event.preventDefault();
+
     if (ratioX > ratioY) {
       if (diffX >= 0) {
         console.log('right swipe');
