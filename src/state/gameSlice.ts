@@ -46,8 +46,20 @@ export const gameSlice = createSlice({
       const obstacles = action.payload ?? 0;
 
       for (let i = 0; i < obstacles; i++) {
+        // TODO: If the grid is too small or
+        // we have too many obstacles this may throw CellNotFoundError
         spawnRandomCell(state.grid, OBSTACLE);
       }
+    },
+
+    swipeLeft(state) {
+      state.grid = state.grid.map(push);
+      afterSwipe(state);
+    },
+
+    swipeRight(state) {
+      state.grid = state.grid.map(reversePush);
+      afterSwipe(state);
     },
 
     swipeUp(state) {
@@ -59,16 +71,6 @@ export const gameSlice = createSlice({
     swipeDown(state) {
       const swiped = transpose(state.grid).map(reversePush);
       state.grid = transpose(swiped);
-      afterSwipe(state);
-    },
-
-    swipeLeft(state) {
-      state.grid = state.grid.map(push);
-      afterSwipe(state);
-    },
-
-    swipeRight(state) {
-      state.grid = state.grid.map(reversePush);
       afterSwipe(state);
     },
   },

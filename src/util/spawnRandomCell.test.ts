@@ -28,9 +28,9 @@ describe('spawnRandomCell function', () => {
   });
 
   test('should insert at the only place available', () => {
-    const grid = [row(0, 1), row(1, 1)];
+    const grid = [row(1, 0), row(1, 1)];
     spawnRandomCell(grid, 1);
-    expect(flatten(grid)).toContain(1);
+    expect(flatten(grid)).not.toContain(0);
   });
 
   test('should throw if no cell is available', () => {
