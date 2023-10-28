@@ -1,8 +1,8 @@
 import { useEffect } from 'preact/hooks';
 import { ALLOW_CONTINUE_AFTER_WIN } from '../config';
-import { SwipeActions, useGameState } from '../hooks/useGameState';
+import { SwipeActions, useGameState } from './useGameState';
 
-export function GameControls() {
+export function useGameControls() {
   const status = useGameState((state) => state.status);
   const actions = useGameState((state) => ({
     swipeUp: state.swipeUp,
@@ -27,10 +27,6 @@ export function GameControls() {
       unsubscribeTouch();
     };
   }, [status, actions]);
-
-  // Nothing to render
-  // maybe this could be a hook?
-  return null;
 }
 
 function whenKeyPressed({
