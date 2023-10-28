@@ -1,6 +1,6 @@
 import { useState } from 'preact/hooks';
 import { HAS_OBSTACLES } from '../config';
-import { useGameState } from '../hooks/useGameState';
+import { startGame, useGameState } from '../hooks/useGameState';
 import { Timer } from './Timer';
 import './UIControls.css';
 
@@ -49,7 +49,6 @@ function ObstaclesSelector({
 function GameStateControls({ obstacles }: { obstacles: number }) {
   const [start, setStart] = useState(Date.now());
   const status = useGameState((state) => state.status);
-  const startGame = useGameState((state) => state.startGame);
 
   if (status === 'READY') {
     return <button onClick={restart}>Start</button>;

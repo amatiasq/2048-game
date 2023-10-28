@@ -19,74 +19,77 @@ import { CellNotFoundError, spawnRandomCell } from '../util/spawnRandomCell';
 const Status = ['READY', 'PLAYING', 'WON', 'GAME_OVER'] as const;
 type Status = (typeof Status)[number];
 
+// State
+
+export interface GameState {
+  status: Status;
+  grid: Cell[][];
+}
+
+export const useGameState = create<GameState>(() => ({
+  status: 'READY',
+  grid: array(ROWS, () => array(COLUMNS, emptyCell)),
+}));
+
+// Actions
+
 const push = HAS_OBSTACLES ? pushCellsWithObstacles : pushCells;
 const reversePush = (list: Cell[]) => push(list.reverse()).reverse();
 
-export interface SwipeActions {
-  swipeLeft: () => void;
-  swipeRight: () => void;
-  swipeUp: () => void;
-  swipeDown: () => void;
+export function startGame(obstacles = 0) {
+  useGameState.setState(() => {
+    const grid = array(ROWS, () => array(COLUMNS, emptyCell));
+
+    spawnRandomCell(grid, INITIAL_CELL_VALUE);
+
+    for (let i = 0; i < obstacles; i++) {
+      // TODO: If the grid is too small or
+      // we have too many obstacles this may throw CellNotFoundError
+      spawnRandomCell(grid, OBSTACLE);
+    }
+
+    return {
+      status: 'PLAYING',
+      grid,
+    };
+  });
 }
 
-export interface GameState extends SwipeActions {
-  status: Status;
-  grid: Cell[][];
-  startGame: (obstacles?: number) => void;
+export function swipeLeft() {
+  useGameState.setState(({ ...newState }) => {
+    newState.grid = newState.grid.map(push);
+    afterSwipe(newState);
+    return newState;
+  });
 }
 
-export const useGameState = create<GameState>((set) => ({
-  status: 'READY',
-  grid: array(ROWS, () => array(COLUMNS, emptyCell)),
+export function swipeRight() {
+  useGameState.setState(({ ...newState }) => {
+    newState.grid = newState.grid.map(reversePush);
+    afterSwipe(newState);
+    return newState;
+  });
+}
 
-  startGame: (obstacles = 0) =>
-    set(() => {
-      const grid = array(ROWS, () => array(COLUMNS, emptyCell));
+export function swipeUp() {
+  useGameState.setState(({ ...newState }) => {
+    const swiped = transpose(newState.grid).map(push);
+    newState.grid = transpose(swiped);
+    afterSwipe(newState);
+    return newState;
+  });
+}
 
-      spawnRandomCell(grid, INITIAL_CELL_VALUE);
+export function swipeDown() {
+  useGameState.setState(({ ...newState }) => {
+    const swiped = transpose(newState.grid).map(reversePush);
+    newState.grid = transpose(swiped);
+    afterSwipe(newState);
+    return newState;
+  });
+}
 
-      for (let i = 0; i < obstacles; i++) {
-        // TODO: If the grid is too small or
-        // we have too many obstacles this may throw CellNotFoundError
-        spawnRandomCell(grid, OBSTACLE);
-      }
-
-      return {
-        status: 'PLAYING',
-        grid,
-      };
-    }),
-
-  swipeLeft: () =>
-    set(({ ...newState }) => {
-      newState.grid = newState.grid.map(push);
-      afterSwipe(newState);
-      return newState;
-    }),
-
-  swipeRight: () =>
-    set(({ ...newState }) => {
-      newState.grid = newState.grid.map(reversePush);
-      afterSwipe(newState);
-      return newState;
-    }),
-
-  swipeUp: () =>
-    set(({ ...newState }) => {
-      const swiped = transpose(newState.grid).map(push);
-      newState.grid = transpose(swiped);
-      afterSwipe(newState);
-      return newState;
-    }),
-
-  swipeDown: () =>
-    set(({ ...newState }) => {
-      const swiped = transpose(newState.grid).map(reversePush);
-      newState.grid = transpose(swiped);
-      afterSwipe(newState);
-      return newState;
-    }),
-}));
+// Internals
 
 function afterSwipe(state: GameState) {
   if (checkWinState(state.grid)) {

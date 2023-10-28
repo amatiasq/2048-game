@@ -1,15 +1,15 @@
 import { useEffect } from 'preact/hooks';
 import { ALLOW_CONTINUE_AFTER_WIN } from '../config';
-import { SwipeActions, useGameState } from './useGameState';
+import {
+  swipeDown,
+  swipeLeft,
+  swipeRight,
+  swipeUp,
+  useGameState,
+} from './useGameState';
 
 export function useGameControls() {
   const status = useGameState((state) => state.status);
-  const actions = useGameState((state) => ({
-    swipeUp: state.swipeUp,
-    swipeDown: state.swipeDown,
-    swipeLeft: state.swipeLeft,
-    swipeRight: state.swipeRight,
-  }));
 
   useEffect(() => {
     if (
@@ -19,22 +19,17 @@ export function useGameControls() {
       return;
     }
 
-    const unsubscribeKeyboard = whenKeyPressed(actions);
-    const unsubscribeTouch = whenTouchSwipe(actions);
+    const unsubscribeKeyboard = whenKeyPressed();
+    const unsubscribeTouch = whenTouchSwipe();
 
     return () => {
       unsubscribeKeyboard();
       unsubscribeTouch();
     };
-  }, [status, actions]);
+  }, [status]);
 }
 
-function whenKeyPressed({
-  swipeUp,
-  swipeDown,
-  swipeLeft,
-  swipeRight,
-}: SwipeActions) {
+function whenKeyPressed() {
   // Record is necessary to use a string as a key
   // but the return type of such functions is complex
   // and () => void or () => unknown wouldn't be passable to dispatch
@@ -59,12 +54,7 @@ function whenKeyPressed({
   }
 }
 
-function whenTouchSwipe({
-  swipeUp,
-  swipeDown,
-  swipeLeft,
-  swipeRight,
-}: SwipeActions) {
+function whenTouchSwipe() {
   // Copied from this nice person
   // https://gist.github.com/SleepWalker/da5636b1abcbaff48c4d?permalink_comment_id=3385647#gistcomment-3385647
 
