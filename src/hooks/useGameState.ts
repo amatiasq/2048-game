@@ -1,4 +1,4 @@
-import { PayloadAction, createSlice } from '@reduxjs/toolkit';
+import { create } from 'zustand';
 import {
   ALLOW_CONTINUE_AFTER_WIN,
   COLUMNS,
@@ -22,64 +22,71 @@ type Status = (typeof Status)[number];
 const push = HAS_OBSTACLES ? pushCellsWithObstacles : pushCells;
 const reversePush = (list: Cell[]) => push(list.reverse()).reverse();
 
-export interface GameState {
-  status: Status;
-  grid: Cell[][];
+export interface SwipeActions {
+  swipeLeft: () => void;
+  swipeRight: () => void;
+  swipeUp: () => void;
+  swipeDown: () => void;
 }
 
-const initialState: GameState = {
+export interface GameState extends SwipeActions {
+  status: Status;
+  grid: Cell[][];
+  startGame: (obstacles?: number) => void;
+}
+
+export const useGameState = create<GameState>((set) => ({
   status: 'READY',
   grid: array(ROWS, () => array(COLUMNS, emptyCell)),
-};
 
-export const gameSlice = createSlice({
-  name: 'grid',
+  startGame: (obstacles = 0) =>
+    set(() => {
+      const grid = array(ROWS, () => array(COLUMNS, emptyCell));
 
-  initialState,
-
-  reducers: {
-    startGame(state, action: PayloadAction<number>) {
-      state.status = 'PLAYING';
-      state.grid = array(ROWS, () => array(COLUMNS, emptyCell));
-      spawnRandomCell(state.grid, INITIAL_CELL_VALUE);
-
-      const obstacles = action.payload ?? 0;
+      spawnRandomCell(grid, INITIAL_CELL_VALUE);
 
       for (let i = 0; i < obstacles; i++) {
         // TODO: If the grid is too small or
         // we have too many obstacles this may throw CellNotFoundError
-        spawnRandomCell(state.grid, OBSTACLE);
+        spawnRandomCell(grid, OBSTACLE);
       }
-    },
 
-    swipeLeft(state) {
-      state.grid = state.grid.map(push);
-      afterSwipe(state);
-    },
+      return {
+        status: 'PLAYING',
+        grid,
+      };
+    }),
 
-    swipeRight(state) {
-      state.grid = state.grid.map(reversePush);
-      afterSwipe(state);
-    },
+  swipeLeft: () =>
+    set(({ ...newState }) => {
+      newState.grid = newState.grid.map(push);
+      afterSwipe(newState);
+      return newState;
+    }),
 
-    swipeUp(state) {
-      const swiped = transpose(state.grid).map(push);
-      state.grid = transpose(swiped);
-      afterSwipe(state);
-    },
+  swipeRight: () =>
+    set(({ ...newState }) => {
+      newState.grid = newState.grid.map(reversePush);
+      afterSwipe(newState);
+      return newState;
+    }),
 
-    swipeDown(state) {
-      const swiped = transpose(state.grid).map(reversePush);
-      state.grid = transpose(swiped);
-      afterSwipe(state);
-    },
-  },
-});
+  swipeUp: () =>
+    set(({ ...newState }) => {
+      const swiped = transpose(newState.grid).map(push);
+      newState.grid = transpose(swiped);
+      afterSwipe(newState);
+      return newState;
+    }),
 
-export const { startGame, swipeUp, swipeDown, swipeLeft, swipeRight } =
-  gameSlice.actions;
-
-export default gameSlice.reducer;
+  swipeDown: () =>
+    set(({ ...newState }) => {
+      const swiped = transpose(newState.grid).map(reversePush);
+      newState.grid = transpose(swiped);
+      afterSwipe(newState);
+      return newState;
+    }),
+}));
 
 function afterSwipe(state: GameState) {
   if (checkWinState(state.grid)) {

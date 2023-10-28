@@ -1,13 +1,11 @@
 import { useState } from 'preact/hooks';
-import { useDispatch, useSelector } from 'react-redux';
 import { HAS_OBSTACLES } from '../config';
-import { startGame } from '../state/gameSlice';
-import { RootState } from '../state/store';
+import { useGameState } from '../hooks/useGameState';
 import { Timer } from './Timer';
 import './UIControls.css';
 
 export function UIControls() {
-  const { status } = useSelector((state: RootState) => state.game);
+  const status = useGameState((state) => state.status);
   const [obstacles, setObstacles] = useState(0);
 
   const showObstaclesControl = HAS_OBSTACLES && status !== 'PLAYING';
@@ -50,8 +48,8 @@ function ObstaclesSelector({
 
 function GameStateControls({ obstacles }: { obstacles: number }) {
   const [start, setStart] = useState(Date.now());
-  const { status } = useSelector((state: RootState) => state.game);
-  const dispatch = useDispatch();
+  const status = useGameState((state) => state.status);
+  const startGame = useGameState((state) => state.startGame);
 
   if (status === 'READY') {
     return <button onClick={restart}>Start</button>;
@@ -85,6 +83,6 @@ function GameStateControls({ obstacles }: { obstacles: number }) {
 
   function restart() {
     setStart(Date.now());
-    dispatch(startGame(obstacles));
+    startGame(obstacles);
   }
 }

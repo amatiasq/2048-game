@@ -1,13 +1,15 @@
-import { AnyAction, Dispatch } from '@reduxjs/toolkit';
 import { useEffect } from 'preact/hooks';
-import { useDispatch, useSelector } from 'react-redux';
 import { ALLOW_CONTINUE_AFTER_WIN } from '../config';
-import { swipeDown, swipeLeft, swipeRight, swipeUp } from '../state/gameSlice';
-import { RootState } from '../state/store';
+import { SwipeActions, useGameState } from '../hooks/useGameState';
 
 export function GameControls() {
-  const { status } = useSelector((state: RootState) => state.game);
-  const dispatch = useDispatch();
+  const status = useGameState((state) => state.status);
+  const actions = useGameState((state) => ({
+    swipeUp: state.swipeUp,
+    swipeDown: state.swipeDown,
+    swipeLeft: state.swipeLeft,
+    swipeRight: state.swipeRight,
+  }));
 
   useEffect(() => {
     if (
@@ -17,21 +19,26 @@ export function GameControls() {
       return;
     }
 
-    const unsubscribeKeyboard = whenKeyPressed(dispatch);
-    const unsubscribeTouch = whenTouchSwipe(dispatch);
+    const unsubscribeKeyboard = whenKeyPressed(actions);
+    const unsubscribeTouch = whenTouchSwipe(actions);
 
     return () => {
       unsubscribeKeyboard();
       unsubscribeTouch();
     };
-  }, [status, dispatch]);
+  }, [status, actions]);
 
   // Nothing to render
   // maybe this could be a hook?
   return null;
 }
 
-function whenKeyPressed(dispatch: Dispatch<AnyAction>) {
+function whenKeyPressed({
+  swipeUp,
+  swipeDown,
+  swipeLeft,
+  swipeRight,
+}: SwipeActions) {
   // Record is necessary to use a string as a key
   // but the return type of such functions is complex
   // and () => void or () => unknown wouldn't be passable to dispatch
@@ -52,11 +59,16 @@ function whenKeyPressed(dispatch: Dispatch<AnyAction>) {
   function handleKeyDown(event: KeyboardEvent) {
     if (!KEYS[event.key]) return;
     event.preventDefault();
-    dispatch(KEYS[event.key]());
+    KEYS[event.key]();
   }
 }
 
-function whenTouchSwipe(dispatch: Dispatch<AnyAction>) {
+function whenTouchSwipe({
+  swipeUp,
+  swipeDown,
+  swipeLeft,
+  swipeRight,
+}: SwipeActions) {
   // Copied from this nice person
   // https://gist.github.com/SleepWalker/da5636b1abcbaff48c4d?permalink_comment_id=3385647#gistcomment-3385647
 
@@ -91,18 +103,18 @@ function whenTouchSwipe(dispatch: Dispatch<AnyAction>) {
     if (ratioX > ratioY) {
       if (diffX >= 0) {
         console.log('right swipe');
-        dispatch(swipeRight());
+        swipeRight();
       } else {
         console.log('left swipe');
-        dispatch(swipeLeft());
+        swipeLeft();
       }
     } else {
       if (diffY >= 0) {
         console.log('down swipe');
-        dispatch(swipeDown());
+        swipeDown();
       } else {
         console.log('up swipe');
-        dispatch(swipeUp());
+        swipeUp();
       }
     }
   }

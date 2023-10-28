@@ -1,11 +1,10 @@
-import { useSelector } from 'react-redux';
 import { COLUMNS, ROWS } from '../config';
-import { RootState } from '../state/store';
+import { useGameState } from '../hooks/useGameState';
 import { OBSTACLE } from '../util/Cell';
 import './Grid.css';
 
 export function Grid() {
-  const grid = useSelector((state: RootState) => state.game.grid);
+  const grid = useGameState((state) => state.grid);
 
   const cells = grid
     .flatMap((row, rowIndex) =>
