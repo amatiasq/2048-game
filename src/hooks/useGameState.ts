@@ -1,4 +1,5 @@
 import { create } from 'zustand';
+import { createJSONStorage, persist } from 'zustand/middleware';
 import {
   ALLOW_CONTINUE_AFTER_WIN,
   COLUMNS,
@@ -26,10 +27,18 @@ export interface GameState {
   grid: Cell[][];
 }
 
-export const useGameState = create<GameState>(() => ({
-  status: 'READY',
-  grid: array(ROWS, () => array(COLUMNS, emptyCell)),
-}));
+export const useGameState = create(
+  persist<GameState>(
+    () => ({
+      status: 'READY',
+      grid: array(ROWS, () => array(COLUMNS, emptyCell)),
+    }),
+    {
+      name: '2048-game',
+      storage: createJSONStorage(() => sessionStorage),
+    }
+  )
+);
 
 // Actions
 
@@ -39,7 +48,6 @@ const reversePush = (list: Cell[]) => push(list.reverse()).reverse();
 export function startGame(obstacles = 0) {
   useGameState.setState(() => {
     const grid = array(ROWS, () => array(COLUMNS, emptyCell));
-
     spawnRandomCell(grid, INITIAL_CELL_VALUE);
 
     for (let i = 0; i < obstacles; i++) {
